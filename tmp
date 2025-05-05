@@ -1,0 +1,57 @@
+import os
+
+def preview_file(filepath):
+    """Displays file contents if it exists."""
+    if os.path.exists(filepath):
+        with open(filepath, 'r') as file:
+            content = file.read()
+        print("\n--- Preview 1: Current File Contents ---\n")
+        print(content)
+        print("\n---------------------------------------\n")
+        return content
+    else:
+        print(f"File {filepath} does not exist. Skipping STIG evaluation.\n")
+        return None
+
+def generate_new_content(old_content):
+    """Generates new file content based on STIG rules."""
+    # Example modification logic (can be updated based on specific STIG rules)
+    new_content = old_content.replace("value1", "secure_value").replace("value2", "secure_value")
+    return new_content
+
+def preview_changes(new_content):
+    """Displays the file preview after STIG modifications."""
+    print("\n--- Preview 2: File After Proposed Changes ---\n")
+    print(new_content)
+    print("\n---------------------------------------------\n")
+
+def modify_file(filepath, new_content):
+    """Writes new content to the file."""
+    with open(filepath, 'w') as file:
+        file.write(new_content)
+
+def process_stig(filepath):
+    """Handles preview, user confirmation, and file modification for a STIG."""
+    current_content = preview_file(filepath)
+    
+    if current_content is None:
+        return  # Skip modification if file doesn't exist
+
+    new_content = generate_new_content(current_content)
+    
+    # Show second preview (proposed changes)
+    preview_changes(new_content)
+
+    # Ask user for confirmation
+    user_input = input("Do you want to apply the STIG changes? (yes/no): ").strip().lower()
+    
+    if user_input == "yes":
+        modify_file(filepath, new_content)
+        print("Changes applied successfully.\n")
+    else:
+        print("User canceled operation. Moving to next STIG.\n")
+
+# Example usage
+if __name__ == "__main__":
+    target_file = "/etc/example.conf"  # Adjust this as needed
+    process_stig(target_file)
